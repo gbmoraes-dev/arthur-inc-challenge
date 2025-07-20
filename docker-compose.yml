@@ -1,0 +1,15 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: freight-calculator
+    restart: on-failure
+    stdin_open: true
+    tty: true
+    environment:
+      - BRASIL_API_URL=https://brasilapi.com.br/api/cep/v2/
+      - OSRM_API_URL=http://router.project-osrm.org/route/v1/driving/
+    # volumes:
+    #   - ./src:/app/src
+    #   - ./tests:/app/tests
