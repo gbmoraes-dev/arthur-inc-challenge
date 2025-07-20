@@ -1,30 +1,49 @@
-from model.frete import Frete
+from typing import Optional
 
-def gerar_frete(peso, distancia, opcao) -> str:
-    try:
-        if opcao == 1:
-            frete = Frete(distancia, peso)
-            frete.tipo = "Normal"
-            frete.calcular_preco()
-        elif opcao == 2:
-            frete = Frete(distancia, peso)
-            frete.tipo = "Sedex"
-            frete.calcular_preco()
-        elif opcao == 3:
-            frete = Frete(distancia, peso)
-            frete.tipo = "Sedex10"
-            frete.calcular_preco()
-    except Exception as e:
-        raise e
-    return f"O valor do frete é {frete.valor:.2f}"
+from model.freight import Freight
+from services import get_distance_between_ceps
+
+
+def generate_freight(
+    weight: float,
+    option: int,
+    origin_cep: Optional[str] = None,
+    destination_cep: Optional[str] = None,
+    distance: Optional[float] = None,
+) -> str:
+    if origin_cep and destination_cep:
+        distance = get_distance_between_ceps(origin_cep, destination_cep)
+
+    if distance is None:
+        raise ValueError("Distance or origin/destination CEPs must be provided.")
+
+    freight = Freight(distance, weight)
+
+    if option == 1:
+        freight.type = "Normal"
+    elif option == 2:
+        freight.type = "Sedex"
+    elif option == 3:
+        freight.type = "Sedex10"
+    else:
+        raise ValueError("Invalid freight option.")
+
+    freight.calculate_price()
+    return f"The freight value is {freight.value:.2f}"
 
 
 if __name__ == "__main__":
-    peso = float(input("Entre com o peso da encomenda -> "))
-    distancia = float(input("Entre com a distância a ser percorrida -> "))
-    opcao = int(
-        input(
-            "Entre com a opcao de entrega\n\t(1)Normal\n\t(2)Sedex\n\t(3)Sedex10\n-> "
+    weight = float(input("Enter the package weight -> "))
+    origin_cep = input("Enter the origin CEP -> ")
+    destination_cep = input("Enter the destination CEP -> ")
+    option = int(
+        input("Enter the delivery option\n\t(1)Normal\n\t(2)Sedex\n\t(3)Sedex10\n-> ")
+    )
+    print(
+        generate_freight(
+            weight=weight,
+            option=option,
+            origin_cep=origin_cep,
+            destination_cep=destination_cep,
         )
     )
-    print(gerar_frete(peso, distancia, opcao))
