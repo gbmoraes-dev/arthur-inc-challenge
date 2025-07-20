@@ -1,11 +1,17 @@
-import pytest
 from unittest.mock import patch
 
+import pytest
+
+from exceptions import (
+    DistanceInvalidError,
+    ExternalAPIError,
+    FreightTypeInvalidError,
+    WeightInvalidError,
+)
 from main import generate_freight
-from exceptions import ExternalAPIError
 
 
-class TestFreight:
+class TestGenerateFreight:
     @pytest.mark.parametrize(
         "weight, distance, option, type, expected_value",
         [
@@ -25,21 +31,21 @@ class TestFreight:
         weight = -3
         distance = 500
         option = 3
-        with pytest.raises(ValueError):
+        with pytest.raises(WeightInvalidError):
             generate_freight(weight=weight, distance=distance, option=option)
 
     def test_invalid_option_input(self):
         weight = 4
         distance = 500
         option = 0
-        with pytest.raises(ValueError):
+        with pytest.raises(FreightTypeInvalidError):
             generate_freight(weight=weight, distance=distance, option=option)
 
     def test_invalid_distance_input(self):
         weight = 4.2
         distance = 0
         option = 3
-        with pytest.raises(ValueError):
+        with pytest.raises(DistanceInvalidError):
             generate_freight(weight=weight, distance=distance, option=option)
 
     def test_non_numeric_input(self):
