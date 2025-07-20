@@ -8,12 +8,7 @@ from exceptions import (
 from model.freight import Freight
 from provider.services.brasil_api import BrasilApiProvider
 from services import get_distance_between_ceps
-from strategies.freight_calulator import (
-    NormalFreight,
-    Sedex10Freight,
-    SedexFreight,
-)
-from strategies.freight_strategy import FreightStrategy
+from factories.freight_factory import FreightStrategyFactory
 
 
 def generate_freight(
@@ -34,14 +29,11 @@ def generate_freight(
             "Distance or origin/destination CEPs must be provided."
         )
 
-    strategy: FreightStrategy
-    if option == 1:
-        strategy = NormalFreight()
-    elif option == 2:
-        strategy = SedexFreight()
-    elif option == 3:
-        strategy = Sedex10Freight()
-    else:
+    factory = FreightStrategyFactory()
+
+    try:
+        strategy = factory.create_strategy(option)
+    except FreightTypeInvalidError:
         raise FreightTypeInvalidError("Invalid freight option.")
 
     freight = Freight(distance, weight, strategy)
