@@ -6,8 +6,14 @@ name = "pypi"
 [packages]
 pytest = "*"
 requests = "*"
+python-dotenv = "*"
 
 [dev-packages]
+black = "*"
+ruff = "*"
+mypy = "*"
+pytest-cov = "*"
+types-requests = "*"
 
 [requires]
 python_version = "3.12"
