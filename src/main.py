@@ -2,6 +2,8 @@ from typing import Optional
 
 from model.freight import Freight
 from services import get_distance_between_ceps
+from provider.services.brasil_api import BrasilApiProvider
+from exceptions import DistanceInvalidError
 
 
 def generate_freight(
@@ -12,10 +14,15 @@ def generate_freight(
     distance: Optional[float] = None,
 ) -> str:
     if origin_cep and destination_cep:
-        distance = get_distance_between_ceps(origin_cep, destination_cep)
+        brasil_api_provider = BrasilApiProvider()
+        distance = get_distance_between_ceps(
+            origin_cep, destination_cep, brasil_api_provider
+        )
 
     if distance is None:
-        raise ValueError("Distance or origin/destination CEPs must be provided.")
+        raise DistanceInvalidError(
+            "Distance or origin/destination CEPs must be provided."
+        )
 
     freight = Freight(distance, weight)
 
