@@ -5,8 +5,9 @@ import pytest
 
 from exceptions import ExternalAPIError, InvalidCepError
 from provider.cep import CepProvider
-from provider.services.brasil_api import BrasilApiProvider, has_valid_coordinates
+from provider.services.brasil_api import BrasilApiProvider
 from services import get_distance_between_ceps
+from validation import Validation
 
 
 class TestProviders:
@@ -88,7 +89,7 @@ class TestBrasilApiProvider:
         ]
 
         for case in invalid_cases:
-            assert not has_valid_coordinates(case)
+            assert not Validation.has_valid_coordinates(case)
 
     def test_has_valid_coordinates_valid_cases(self):
         valid_cases = [
@@ -99,4 +100,4 @@ class TestBrasilApiProvider:
         ]
 
         for case in valid_cases:
-            assert has_valid_coordinates(case)
+            assert Validation.has_valid_coordinates(case)
