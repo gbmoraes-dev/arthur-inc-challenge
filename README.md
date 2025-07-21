@@ -57,8 +57,10 @@ src/
 ├── model/                # Modelos de dados
 │   └── freight.py
 ├── provider/             # Provedores de serviços externos
+│   ├── cache.py          # Implementação de cache com Redis
 │   ├── cep.py            # Interface para provedores de CEP
 │   ├── distance.py       # Interface para provedores de distância
+│   ├── resilience.py     # Implementações de Circuit Breaker e Retry
 │   └── services/         # Implementações concretas de provedores
 │       ├── brasil_api.py # Integração com Brasil API
 │       └── osrm_api.py   # Integração com OSRM API
@@ -69,14 +71,15 @@ src/
 └── validation.py         # Validações de dados
 
 test/                     # Testes automatizados
-├── test_integration.py
-├── test_main.py
-├── test_providers.py
-├── test_services.py
-└── test_strategy.py
+├── test_cache.py         # Testes para o sistema de cache
+├── test_integration.py   # Testes de integração
+├── test_main.py          # Testes da interface principal
+├── test_providers.py     # Testes dos provedores de serviço
+├── test_resilience.py    # Testes de resiliência (Circuit Breaker/Retry)
+└── test_strategy.py      # Testes das estratégias de cálculo
 ```
 
-Esta estrutura reflete a separação de responsabilidades e a aplicação dos padrões de design mencionados anteriormente.
+Esta estrutura reflete a separação de responsabilidades e a aplicação dos padrões de design mencionados anteriormente, destacando particularmente a implementação dos padrões de resiliência e cache.
 
 ### Containerização com Docker
 
@@ -111,7 +114,7 @@ A pipeline de CI implementada no GitHub Actions inclui:
 
 2. Construa e execute os containers com Docker Compose
    ```bash
-   docker-compose up -d
+   docker-compose up --build -d
    ```
 
    Isso iniciará automaticamente o container da aplicação e o Redis para cache.
