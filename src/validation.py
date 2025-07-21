@@ -1,4 +1,5 @@
 from typing import Any, Dict
+import re
 
 
 class Validation:
@@ -31,3 +32,12 @@ class Validation:
             return True
         except (AttributeError, TypeError, ValueError):
             return False
+
+    @staticmethod
+    def is_valid_cep(cep: str) -> bool:
+        if not cep:
+            return False
+
+        cep = cep.replace("-", "")
+
+        return bool(re.match(r"^\d{8}$", cep))

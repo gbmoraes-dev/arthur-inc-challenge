@@ -16,9 +16,7 @@ def get_distance_between_ceps(
     if not Validation.has_valid_coordinates(
         origin_data
     ) or not Validation.has_valid_coordinates(destination_data):
-        raise ExternalAPIError(
-            f"CEP de destino {destination_cep} não possui coordenadas válidas."
-        )
+        raise ExternalAPIError(f"CEP {origin_cep} or {destination_cep} is invalid.")
 
     origin_coords = origin_data["location"]["coordinates"]
     destination_coords = destination_data["location"]["coordinates"]

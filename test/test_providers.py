@@ -71,7 +71,7 @@ class TestBrasilApiProvider:
         mock_get.return_value = mock_response
 
         provider = BrasilApiProvider()
-        with pytest.raises(InvalidCepError, match="não possui coordenadas válidas"):
+        with pytest.raises(InvalidCepError, match="not have valid coordinates"):
             provider.get_cep_data("12345678")
 
     def test_has_valid_coordinates_invalid_cases(self):
