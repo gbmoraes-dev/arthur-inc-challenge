@@ -9,6 +9,7 @@ from services import get_distance_between_ceps
 
 class TestServices:
     @patch("requests.get")
+    @patch("provider.resilience.osrm_api_breaker", lambda f: f)
     def test_get_distance_between_ceps_handles_osrm_error(self, mock_get):
         mock_provider = MagicMock(spec=CepProvider)
 
@@ -26,6 +27,7 @@ class TestServices:
             get_distance_between_ceps("22041001", "01310200", mock_provider)
 
     @patch("requests.get")
+    @patch("provider.resilience.osrm_api_breaker", lambda f: f)
     def test_get_distance_between_ceps_handles_invalid_osrm_response(self, mock_get):
         mock_provider = MagicMock(spec=CepProvider)
 

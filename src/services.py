@@ -3,10 +3,12 @@ from exceptions import ExternalAPIError
 from provider.cep import CepProvider
 from provider.services.osrm_api import OSRMProvider
 from validation import Validation
+from provider.resilience import with_retry
 
 load_dotenv()
 
 
+@with_retry(max_attempts=2, min_wait=1.0, max_wait=3.0)
 def get_distance_between_ceps(
     origin_cep: str, destination_cep: str, cep_provider: CepProvider
 ) -> float:

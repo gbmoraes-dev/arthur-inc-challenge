@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 
 from exceptions import ExternalAPIError
 from provider.distance import DistanceProvider
+from provider.resilience import osrm_api_breaker, with_retry
 
 load_dotenv()
 
@@ -15,6 +16,8 @@ class OSRMProvider(DistanceProvider):
         if not self._api_url:
             raise ValueError("OSRM_API_URL not found in environment variables.")
 
+    @with_retry(max_attempts=3, min_wait=1.0, max_wait=5.0)
+    @osrm_api_breaker
     def get_distance(
         self, origin_lon: float, origin_lat: float, dest_lon: float, dest_lat: float
     ) -> float:

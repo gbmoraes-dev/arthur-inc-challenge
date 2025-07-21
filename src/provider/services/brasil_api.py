@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from typing import Any, Dict
 
 from provider.cep import CepProvider
+from provider.resilience import brasil_api_breaker, with_retry
 from exceptions import ExternalAPIError, InvalidCepError
 from validation import Validation
 
@@ -16,6 +17,8 @@ class BrasilApiProvider(CepProvider):
         if not self._base_url:
             raise ValueError("BRASIL_API_URL not found in environment variables.")
 
+    @with_retry(max_attempts=3, min_wait=1.0, max_wait=5.0)
+    @brasil_api_breaker
     def get_cep_data(self, cep: str) -> Dict[str, Any]:
         if not Validation.is_valid_cep(cep):
             raise InvalidCepError(f"CEP {cep} inválido.")

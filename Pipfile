@@ -7,6 +7,8 @@ name = "pypi"
 pytest = "*"
 requests = "*"
 python-dotenv = "*"
+tenacity = "*"
+pybreaker = "*"
 
 [dev-packages]
 black = "*"

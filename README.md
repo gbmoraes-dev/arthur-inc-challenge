@@ -14,6 +14,12 @@ O cálculo de frete foi implementado utilizando o **Strategy Pattern**, permitin
 #### Factory Pattern
 O **Factory Pattern** é utilizado para criar as diferentes estratégias de cálculo de frete. A classe `FreightStrategyFactory` cria instâncias concretas de estratégias baseadas na opção escolhida pelo usuário.
 
+#### Retry Pattern
+O **Retry Pattern** foi implementado usando a biblioteca **tenacity** para aumentar a resiliência do sistema contra falhas temporárias nas APIs externas (Brasil API e OSRM). Este padrão permite que as requisições que falham sejam automaticamente tentadas novamente com um tempo de espera exponencial entre as tentativas, aumentando a chance de sucesso em casos de instabilidade momentânea da rede ou dos serviços externos.
+
+#### Circuit Breaker Pattern
+O **Circuit Breaker Pattern** foi implementado com a biblioteca **pybreaker** para evitar chamadas repetidas a serviços externos que estejam falhando consistentemente. Quando um serviço apresenta falhas consecutivas, o circuit breaker "abre" e para de fazer requisições por um tempo determinado, evitando sobrecarga no serviço e permitindo sua recuperação, além de falhar rapidamente para o usuário ao invés de esperar timeouts.
+
 ### Princípios SOLID
 
 #### Single Responsibility Principle (SRP)
