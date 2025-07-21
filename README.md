@@ -20,6 +20,9 @@ O **Retry Pattern** foi implementado usando a biblioteca **tenacity** para aumen
 #### Circuit Breaker Pattern
 O **Circuit Breaker Pattern** foi implementado com a biblioteca **pybreaker** para evitar chamadas repetidas a serviços externos que estejam falhando consistentemente. Quando um serviço apresenta falhas consecutivas, o circuit breaker "abre" e para de fazer requisições por um tempo determinado, evitando sobrecarga no serviço e permitindo sua recuperação, além de falhar rapidamente para o usuário ao invés de esperar timeouts.
 
+#### Cache Pattern
+O **Cache Pattern** foi implementado utilizando **Redis** como armazenamento para dados recuperados das APIs externas (Brasil API e OSRM). Esta abordagem reduz significativamente o tempo de resposta para consultas repetidas, diminui a carga nos serviços externos e melhora a experiência do usuário. O sistema utiliza um decorator `@cached` que automaticamente gerencia o ciclo de vida dos dados em cache, implementado como um Singleton para garantir uma única conexão com o Redis.
+
 ### Princípios SOLID
 
 #### Single Responsibility Principle (SRP)
@@ -98,52 +101,64 @@ A pipeline de CI implementada no GitHub Actions inclui:
 
 ## Como Executar o Projeto
 
-### Requisitos
+### Utilizando Docker (recomendado)
 
-- Python 3.12 ou superior
-- Pipenv (opcional)
-- Docker e Docker Compose (opcional)
+1. Clone o repositório
+   ```bash
+   git clone https://github.com/gbmoraes-dev/arthur-inc-challenge.git
+   cd arthur-inc-challenge
+   ```
 
-### Execução Local
+2. Construa e execute os containers com Docker Compose
+   ```bash
+   docker-compose up -d
+   ```
 
-#### Com Pipenv:
+   Isso iniciará automaticamente o container da aplicação e o Redis para cache.
 
-```bash
-# Adicionar as envs
-cp .env.example .env
+3. Acesse o container da aplicação para interagir com o sistema
+   ```bash
+   docker exec -it freight-calculator bash
+   python src/main.py
+   ```
 
-# Instalar dependências
-pipenv install
+### Instalação Local
 
-# Ativar o ambiente virtual
-pipenv shell
+1. Clone o repositório
+   ```bash
+   git clone https://github.com/gbmoraes-dev/arthur-inc-challenge.git
+   cd arthur-inc-challenge
+   ```
 
-# Executar o projeto
-PYTHONPATH=./src python -m src.main
-```
+2. Configure um ambiente virtual
+   - Utilizando Pipenv:
+     ```bash
+     pip install pipenv
+     pipenv install
+     pipenv shell
+     ```
 
-### Execução com Docker
+3. Configure as variáveis de ambiente
+   ```bash
+   cp .env.example .env
+   ```
 
-```bash
-# Construir e iniciar o container
-docker compose up --build
+4. Execute o Redis localmente (opcional, mas recomendado para cache)
+   ```bash
+   docker run -d -p 6379:6379 --name freight-redis redis:7.0-alpine
+   ```
 
-# Ou para executar em segundo plano
-docker compose up --build -d
-
-# Para acessar o shell no container
-docker exec -it freight-calculator bash
-
-# Executar o projeto
-python -m src.main
-```
+5. Execute a aplicação
+   ```bash
+   python src/main.py
+   ```
 
 ## Execução de Testes
 
 ### Local:
 
 ```bash
-# Com Pipenv
+# Executar testes
 pipenv run pytest
 
 # Com cobertura de código
@@ -155,4 +170,4 @@ pipenv run pytest --cov=src
 ```bash
 # Executar testes
 docker compose run --entrypoint "python -m pytest" app
-```bash
+```

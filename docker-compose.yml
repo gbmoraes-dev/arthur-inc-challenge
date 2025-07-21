@@ -10,6 +10,22 @@ services:
     environment:
       - BRASIL_API_URL=https://brasilapi.com.br/api/cep/v2/
       - OSRM_API_URL=http://router.project-osrm.org/route/v1/driving/
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
     # volumes:
     #   - ./src:/app/src
     #   - ./tests:/app/tests
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:7.0-alpine
+    container_name: freight-redis
+    ports:
+      - "6379:6379"
+    restart: on-failure
+    volumes:
+      - redis-data:/data
+
+volumes:
+  redis-data:
